@@ -99,21 +99,15 @@ fun PhonelyticsDashboard(viewModel: PhonelyticsViewModel) {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = colors.background,
-            bottomBar = {
-                // Bottom translucent navigation pill bar
-                BottomTranslucentNavBar(
-                    currentSection = currentSection,
-                    onSectionSelected = { currentSection = it },
-                    accentColor = colors.primary,
-                    bgColor = colors.background
-                )
-            }
+            containerColor = colors.background
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(
+                        top = innerPadding.calculateTopPadding(),
+                        bottom = 0.dp
+                    )
                     // Animated gradient radial backdrops representing ambient energy fields
                     .drawBehind {
                         if (!amoled) {
@@ -157,7 +151,7 @@ fun PhonelyticsDashboard(viewModel: PhonelyticsViewModel) {
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Quick-Action Dynamic Health Status Island
+                    // Quick-Action Dynamic Health Status Island (High-Contrast Majestic Circle Progress)
                     DynamicStatusIsland(
                         overallHealthScore = metrics.stabilityScore,
                         thermalState = metrics.thermalState,
@@ -229,8 +223,18 @@ fun PhonelyticsDashboard(viewModel: PhonelyticsViewModel) {
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(72.dp)) // padding for the translucent nav overlap
                 }
+
+                // Beautiful Translucent Nav Bar Overlay placed in Bottom Center
+                BottomTranslucentNavBar(
+                    currentSection = currentSection,
+                    onSectionSelected = { currentSection = it },
+                    accentColor = colors.primary,
+                    bgColor = colors.background,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = innerPadding.calculateBottomPadding() + 10.dp)
+                )
             }
         }
     }
@@ -344,7 +348,7 @@ fun DashboardHeader(
                         .background(primaryAccent.copy(alpha = 0.15f), CircleShape)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Share,
+                        imageVector = Icons.Default.Star,
                         contentDescription = "Themes",
                         tint = primaryAccent,
                         modifier = Modifier.size(18.dp)
@@ -434,75 +438,193 @@ fun DynamicStatusIsland(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .scale(pulseFactor)
             .background(
-                Brush.linearGradient(
+                Brush.verticalGradient(
                     colors = listOf(
-                        accentColor.copy(alpha = 0.25f),
-                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.45f)
                     )
                 ),
-                shape = RoundedCornerShape(26.dp)
+                shape = RoundedCornerShape(28.dp)
             )
             .border(
-                width = 1.5.dp,
+                width = 1.dp,
                 brush = Brush.horizontalGradient(
-                    colors = listOf(accentColor, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f))
+                    colors = listOf(
+                        accentColor.copy(alpha = 0.35f),
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+                    )
                 ),
-                shape = RoundedCornerShape(26.dp)
+                shape = RoundedCornerShape(28.dp)
             )
-            .clickable(onClick = onOneTapOptimized)
-            .padding(14.dp)
+            .padding(18.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                // High-Contrast Circle Gauge
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(46.dp)) {
-                    CircularProgressIndicator(
-                        progress = overallHealthScore / 100f,
-                        color = accentColor,
-                        strokeWidth = 4.dp,
-                        trackColor = accentColor.copy(alpha = 0.15f),
-                        modifier = Modifier.fillMaxSize()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .background(accentColor, CircleShape)
                     )
                     Text(
-                        text = "$overallHealthScore%",
+                        text = "SYSTEM WELLNESS INDEX",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.5.sp,
                             color = accentColor
                         )
                     )
                 }
 
-                Column {
+                Box(
+                    modifier = Modifier
+                        .background(accentColor.copy(alpha = 0.12f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
                     Text(
-                        text = "System Wellness Index",
-                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        text = "Thermals: $thermalState • $lagStatus",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 11.sp,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                        text = "SECURE PROTOCOL",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = accentColor
                         )
                     )
                 }
             }
 
-            // High-Performance Pill Button
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Centered High-Performance Progress Ring
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(115.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = accentColor.copy(alpha = 0.08f * pulseFactor),
+                            radius = size.width * (0.55f + pulseFactor * 0.05f)
+                        )
+                    }
+            ) {
+                CircularProgressIndicator(
+                    progress = overallHealthScore / 100f,
+                    color = accentColor,
+                    strokeWidth = 9.dp,
+                    trackColor = accentColor.copy(alpha = 0.08f),
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "$overallHealthScore",
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = 38.sp,
+                            fontWeight = FontWeight.Light,
+                            letterSpacing = (-1).sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    )
+                    Text(
+                        text = "Optimal",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.5.sp,
+                            color = accentColor
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Vital Metrics row grid
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.04f), RoundedCornerShape(14.dp))
+                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "THERMALS",
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp, color = Color.Gray)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = thermalState,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold, color = accentColor)
+                    )
+                }
+
+                Box(modifier = Modifier.width(1.dp).height(20.dp).background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)))
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1.2f)) {
+                    Text(
+                        text = "INTELLIGENCE STATUS",
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp, color = Color.Gray)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = lagStatus,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+
+                Box(modifier = Modifier.width(1.dp).height(20.dp).background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)))
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "SECURITY STATUS",
+                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp, color = Color.Gray)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "Fully Secured",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.tertiary)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Premium Full-Width Call-to-action button
             Button(
                 onClick = onOneTapOptimized,
                 colors = ButtonDefaults.buttonColors(containerColor = accentColor, contentColor = Color.Black),
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                modifier = Modifier.height(34.dp)
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
             ) {
-                Text("OPTIMIZE", style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp))
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Calibrate",
+                    modifier = Modifier.size(15.dp),
+                    tint = Color.Black
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "RUN ON-TAP SYSTEM OPTIMIZATION",
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                )
             }
         }
     }
@@ -746,6 +868,9 @@ fun OverviewScreen(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
@@ -898,6 +1023,9 @@ fun PerformanceLabScreen(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
@@ -1047,6 +1175,9 @@ fun BatteryNetworksScreen(
                     Switch(checked = autoCooling, onCheckedChange = { onToggleAutoCool() })
                 }
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
@@ -1222,6 +1353,9 @@ fun StorageBehaviorScreen(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
@@ -1374,6 +1508,9 @@ fun PrivacySpamScreen(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
@@ -1452,6 +1589,9 @@ fun AuditLogsScreen(
                         }
                     }
                 }
+                item {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         }
     }
@@ -1465,10 +1605,11 @@ fun BottomTranslucentNavBar(
     currentSection: DashboardSection,
     onSectionSelected: (DashboardSection) -> Unit,
     accentColor: Color,
-    bgColor: Color
+    bgColor: Color,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
             .background(Color.Transparent)
